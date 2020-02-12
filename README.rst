@@ -100,7 +100,7 @@ For process instructions and additional guidance, see the `Guidelines for contri
   and License** section.
 
 Copyright and License
-=====================
+====================
 
 All content in this repository, unless otherwise stated, is 
 Copyright © Amazon Web Services, Inc. or its affiliates. All rights reserved.
