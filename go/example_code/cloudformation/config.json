@@ -1,5 +1,0 @@
-{
-    "TemplateFile": "cfn_template.json",
-    "MaxRetrySeconds": 100,
-    "Debug": true
-}
