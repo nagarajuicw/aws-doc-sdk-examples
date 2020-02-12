@@ -68,7 +68,10 @@ func PopulateConfiguration() error {
     text := string(content)
 
     // Marshall JSON string in text into global struct
-    json.Unmarshal([]byte(text), &GlobalConfig)
+    err = json.Unmarshal([]byte(text), &GlobalConfig)
+    if err != nil {
+        return err
+    }
 
     return nil
 }
@@ -113,6 +116,9 @@ func TestCfnCrudOps(t *testing.T) {
 
     // Get template from file
     templateBody, err := GetTemplateFromFile(GlobalConfig.TemplateFile)
+    if err != nil {
+        t.Fatal(err)
+    }
 
     // Initialize a session that the SDK uses to load
     // credentials from the shared credentials file ~/.aws/credentials
@@ -170,6 +176,16 @@ func TestCfnCrudOps(t *testing.T) {
         t.Fatal(err)
     }
 
+    // This should fail
+    t.Log("Creating stack " + stackName + " again")
+    err = CreateStack(sess, stackName, templateBody)
+    if err == nil {
+        t.Errorf("Did not get expected error trying to create stack %s", stackName)
+        return
+    }
+
+    t.Log("Got expected error trying to create the same stack again")
+
     // Now delete the stack
     DebugPrint(t, GlobalConfig.Debug, "Deleting stack "+stackName)
     err = DeleteStack(sess, stackName)
@@ -211,4 +227,7 @@ func TestCfnCrudOps(t *testing.T) {
         msg := name[0] + " had unexpected status: " + status
         t.Fatal(msg)
     }
+
+    // No point in trying to delete the same bucket
+    // as it doesn't fail if the bucket doesn't exist.
 }
